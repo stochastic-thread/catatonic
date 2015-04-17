@@ -1,0 +1,10 @@
+2015-04-17T18:36:36.208637110 0.083593s notice: Recursively removing directory /root/catatonic/rethinkdb_data/tmp
+2015-04-17T18:36:36.238963903 0.113917s notice: Initializing directory /root/catatonic/rethinkdb_data
+2015-04-17T18:36:36.239506266 0.114459s info: Creating a default database for your convenience. (This is because you ran 'rethinkdb' without 'create', 'serve', or '--join', and the directory '/root/catatonic/rethinkdb_data' did not already exist or is empty.)
+2015-04-17T18:36:36.239587793 0.114540s notice: Running rethinkdb 2.0.0+1~0trusty (GCC 4.8.2)...
+2015-04-17T18:36:36.263760283 0.138719s notice: Running on Linux 3.13.0-43-generic x86_64
+2015-04-17T18:36:36.264143620 0.139096s notice: Loading data from directory /root/catatonic/rethinkdb_data
+2015-04-17T18:36:36.333679047 0.208632s info: Automatically using cache size of 100 MB
+2015-04-17T18:36:36.335052824 0.210005s warn: Cache size does not leave much memory for server and query overhead (available memory: 611 MB).
+2015-04-17T18:36:36.335445748 0.210397s warn: Cache size is very low and may impact performance.
+2015-04-17T18:36:36.335968445 0.210921s error: TCP socket creation failed for port 29015: Address already in use.
