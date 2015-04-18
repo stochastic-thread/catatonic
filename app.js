@@ -115,6 +115,7 @@ app.post("/publish/photo", function(req, res) {
   var path = api + "tags/" + update.object_id +
              "/media/popular?client_id=" + 
              config.instagram.client;
+  console.log(path);
 
   var conn;
   r.connect(config.database).then(function(c) {
