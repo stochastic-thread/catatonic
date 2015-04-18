@@ -1,7 +1,7 @@
 var request = require('request');
+var http = require('http');
 var bodyParser = require('body-parser');
 var express = require('express');
-var sockio = require('socket.io');
 var crypto = require('crypto');
 var r = require('rethinkdb');
 var q = require('q');
@@ -9,25 +9,31 @@ var q = require('q');
 var config = require("./config");
 
 var app = express();
+var server = http.createServer(app);
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
 
 var api = "https://api.instagram.com/v1/";
 var lastUpdate = 0;
 
-var io = sockio.listen(app.listen(config.port), {log: false});
+var io = require('socket.io').listen(server);
+server.listen(config.port);
+
 console.log("Server started on port " + config.port);
 
 function subscribeToTag(tagName) {
   var params = {
     client_id: config.instagram.client,
     client_secret: config.instagram.secret,
+    verify_token: config.instagram.verify,
     object: "tag", aspect: "media", object_id: tagName,
     callback_url: "http://" + config.host + "/publish/photo"
   };
 
   request.post({url: api + "subscriptions", form: params},
     function(err, response, body) {
+      console.log(body);
       if (err) console.log("Failed to subscribe:", err)
       else console.log("Subscribed to tag:", tagName);
   });
@@ -63,7 +69,7 @@ r.connect(config.database).then(function(c) {
     console.log("Error:", err);
   });
 
-  subscribeToTag("cat");
+  subscribeToTag("catofinstagram");
 });
 
 io.sockets.on("connection", function(socket) {
@@ -102,7 +108,6 @@ app.use("/publish/photo", bodyParser.json({
 }));
 
 app.post("/publish/photo", function(req, res) {
-  console.log("Got a post");
   if (!req.validOrigin)
     return res.status(500).json({err: "Invalid signature"});
   
@@ -113,16 +118,14 @@ app.post("/publish/photo", function(req, res) {
   lastUpdate = update.time;
 
   var path = api + "tags/" + update.object_id +
-             "/media/popular?client_id=" + 
+             "/media/recent?client_id=" + 
              config.instagram.client;
-  console.log(path);
 
   var conn;
   r.connect(config.database).then(function(c) {
     conn = c;
     return r.table("instacat").insert(
       r.http(path)("data").merge(function(item) {
-        console.log(r.http(path)("data"));
         return {
           time: r.now(),
           place: r.point(

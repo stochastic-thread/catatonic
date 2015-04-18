@@ -11,6 +11,6 @@ module.exports = {
     db: "cats"
   },
 
-  host: "colle.space:8091",
+  host: "81dbf5d8.ngrok.io",
   port: 8091
 }
